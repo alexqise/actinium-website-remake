@@ -1,44 +1,82 @@
 import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import colors from '../../../assets/styles/variables/colors';
-import metrics from '../../../assets/styles/variables/metrics';
-import useScrolled from '../../../hooks/useScrolled';
+import colors from '../../assets/styles/variables/colors';
+import metrics from '../../assets/styles/variables/metrics';
+import useScrolled from '../../hooks/useScrolled';
+import NAV_ITEMS from './navData';
+import DropdownMenu from './DropdownMenu';
 
 const LOGO_URL = 'https://d1io3yog0oux5.cloudfront.net/_7a2f79adab42c3713ff32f3f4d0b71d0/actiniumpharma/files/images/logo.png';
-
-const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Pipeline', href: '#pipeline' },
-  { label: 'Ac-225 Technology', href: '#technology' },
-  { label: 'R&D Platform', href: '#technology' },
-  { label: 'Investors', href: '#news' },
-  { label: 'Careers', href: '#cta' },
-  { label: 'Dashboard', href: '/dashboard' },
-];
 
 export default function Nav() {
   const scrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState(null);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  const handleLinkClick = () => setMenuOpen(false);
+  const handleLinkClick = () => {
+    setMenuOpen(false);
+    setMobileExpanded(null);
+  };
+
+  const handleNavItemClick = (item, e) => {
+    if (item.children && window.innerWidth <= 1024) {
+      e.preventDefault();
+      setMobileExpanded(mobileExpanded === item.label ? null : item.label);
+    } else {
+      handleLinkClick();
+    }
+  };
+
+  const handleHashLink = (to) => {
+    const [path, hash] = to.split('#');
+    navigate(path);
+    if (hash) {
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
 
   return (
     <>
       <Wrapper $scrolled={scrolled}>
         <Inner>
-          <LogoLink href="#">
+          <LogoLink to="/" onClick={handleLinkClick}>
             <Logo src={LOGO_URL} alt="Actinium Pharmaceuticals" />
           </LogoLink>
           <Links $open={menuOpen}>
-            {NAV_LINKS.map(link => (
-              <li key={link.label}>
-                <NavLink href={link.href} onClick={handleLinkClick}>
-                  {link.label}
-                </NavLink>
-              </li>
+            {NAV_ITEMS.map(item => (
+              <NavItem key={item.label}>
+                <StyledNavLink
+                  to={item.to}
+                  onClick={(e) => handleNavItemClick(item, e)}
+                  $active={pathname === item.to || pathname.startsWith(item.to + '/')}
+                >
+                  {item.label}
+                  {item.children && <Chevron $expanded={mobileExpanded === item.label}>&#9662;</Chevron>}
+                </StyledNavLink>
+                {item.children && (
+                  <DropdownMenu
+                    items={item.children}
+                    mobileOpen={mobileExpanded === item.label}
+                    onItemClick={(e) => {
+                      const target = e.currentTarget;
+                      const to = target.getAttribute('to') || target.getAttribute('href');
+                      if (to && to.includes('#')) {
+                        e.preventDefault();
+                        handleHashLink(to);
+                      }
+                      handleLinkClick();
+                    }}
+                  />
+                )}
+              </NavItem>
             ))}
             <li>
-              <ContactBtn href="#cta" onClick={handleLinkClick}>
+              <ContactBtn to="/contact" onClick={handleLinkClick}>
                 Contact
               </ContactBtn>
             </li>
@@ -52,7 +90,7 @@ export default function Nav() {
           </Hamburger>
         </Inner>
       </Wrapper>
-      {menuOpen && <Overlay onClick={() => setMenuOpen(false)} />}
+      {menuOpen && <Overlay onClick={() => { setMenuOpen(false); setMobileExpanded(null); }} />}
     </>
   );
 }
@@ -63,10 +101,10 @@ const Wrapper = styled.nav`
   left: 0;
   right: 0;
   z-index: 100;
-  background: ${p => p.$scrolled ? 'rgba(255,255,255,0.97)' : 'transparent'};
-  backdrop-filter: ${p => p.$scrolled ? 'blur(12px)' : 'none'};
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
   box-shadow: ${p => p.$scrolled ? '0 1px 0 rgba(0,0,0,0.06)' : 'none'};
-  transition: all 0.35s ease;
+  transition: box-shadow 0.3s ease;
   height: ${metrics.navHeight};
 `;
 
@@ -80,7 +118,7 @@ const Inner = styled.div`
   justify-content: space-between;
 `;
 
-const LogoLink = styled.a`
+const LogoLink = styled(Link)`
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -115,17 +153,32 @@ const Links = styled.ul`
     transform: translateX(${p => p.$open ? '0' : '100%'});
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 101;
+    overflow-y: auto;
 
     li { width: 100%; }
   }
 `;
 
-const NavLink = styled.a`
-  display: block;
+const NavItem = styled.li`
+  position: relative;
+
+  &:hover > div {
+    @media (min-width: ${metrics.breakpoints.desktop}) {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+`;
+
+const StyledNavLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.5rem 0.85rem;
   font-size: 0.9rem;
   font-weight: 500;
-  color: ${colors.textSecondary};
+  color: ${p => p.$active ? colors.blue : colors.textSecondary};
   border-radius: ${metrics.radius.small};
   transition: color 0.2s ease, background 0.2s ease;
   white-space: nowrap;
@@ -141,7 +194,13 @@ const NavLink = styled.a`
   }
 `;
 
-const ContactBtn = styled.a`
+const Chevron = styled.span`
+  font-size: 0.6rem;
+  transition: transform 0.2s ease;
+  ${p => p.$expanded && 'transform: rotate(180deg);'}
+`;
+
+const ContactBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
   padding: 0.45rem 1.25rem;

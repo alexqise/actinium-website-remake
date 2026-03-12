@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
@@ -26,9 +27,9 @@ export default function CtaBanner() {
             <SubmitBtn type="submit">Subscribe</SubmitBtn>
           </Form>
           <Links>
-            <LinkItem href="#">Explore Careers &rarr;</LinkItem>
-            <LinkItem href="#">Contact Us &rarr;</LinkItem>
-            <LinkItem href="#">Investor Relations &rarr;</LinkItem>
+            <LinkItem to="/careers">Explore Careers &rarr;</LinkItem>
+            <LinkItem to="/contact">Contact Us &rarr;</LinkItem>
+            <LinkItem to="/investors">Investor Relations &rarr;</LinkItem>
           </Links>
         </Inner>
       </Container>
@@ -52,25 +53,12 @@ const Inner = styled.div`
   border-radius: ${metrics.radius.xl};
   padding: clamp(2.5rem, 5vw, 4rem);
   text-align: center;
-  position: relative;
-  overflow: hidden;
   opacity: ${p => p.$visible ? 1 : 0};
-  transform: translateY(${p => p.$visible ? 0 : '30px'});
-  transition: all 0.7s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.12) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
-    pointer-events: none;
-  }
+  transform: translateY(${p => p.$visible ? 0 : '20px'});
+  transition: all 0.6s ease;
 `;
 
 const Title = styled.h2`
-  position: relative;
   font-family: 'Instrument Serif', Georgia, serif;
   font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 400;
@@ -79,7 +67,6 @@ const Title = styled.h2`
 `;
 
 const Desc = styled.p`
-  position: relative;
   font-size: 1rem;
   color: ${colors.textOnDarkMuted};
   max-width: 440px;
@@ -88,7 +75,6 @@ const Desc = styled.p`
 `;
 
 const Form = styled.form`
-  position: relative;
   display: flex;
   gap: 0.6rem;
   max-width: 420px;
@@ -120,24 +106,20 @@ const SubmitBtn = styled.button`
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: ${metrics.radius.small};
-  transition: all 0.25s ease;
+  transition: background 0.25s ease;
   white-space: nowrap;
 
-  &:hover {
-    background: ${colors.bgSecondary};
-    transform: translateY(-1px);
-  }
+  &:hover { background: ${colors.bgSecondary}; }
 `;
 
 const Links = styled.div`
-  position: relative;
   display: flex;
   gap: 2rem;
   justify-content: center;
   flex-wrap: wrap;
 `;
 
-const LinkItem = styled.a`
+const LinkItem = styled(Link)`
   font-size: 0.88rem;
   font-weight: 500;
   color: ${colors.textOnDarkMuted};

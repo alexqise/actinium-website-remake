@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
@@ -10,6 +11,7 @@ const PIPELINE_DATA = [
     phaseColor: '#059669',
     phaseBg: '#ecfdf5',
     name: 'Actimab-A',
+    slug: 'actimab-a',
     description: 'CD33 targeting, mutation agnostic therapy for relapsed/refractory acute myeloid leukemia.',
   },
   {
@@ -17,6 +19,7 @@ const PIPELINE_DATA = [
     phaseColor: colors.blue,
     phaseBg: colors.blueFaint,
     name: 'ATNM-400',
+    slug: 'atnm-400',
     description: 'First-in-class Ac-225 pan-tumor radiotherapy for mCRPC, NSCLC, and breast cancer.',
   },
   {
@@ -24,6 +27,7 @@ const PIPELINE_DATA = [
     phaseColor: '#d97706',
     phaseBg: '#fffbeb',
     name: 'Iomab-ACT / Iomab-B',
+    slug: 'iomab-act',
     description: 'Targeted conditioning and targeted radiotherapy pipeline expanding treatment frontiers.',
   },
   {
@@ -31,6 +35,7 @@ const PIPELINE_DATA = [
     phaseColor: colors.textTertiary,
     phaseBg: colors.bgSecondary,
     name: 'Ac-225 Manufacturing',
+    slug: null,
     description: 'Proprietary Actinium-225 manufacturing technology platform enabling scaled production.',
   },
 ];
@@ -51,18 +56,31 @@ export default function Pipeline() {
         </Header>
         <Grid>
           {PIPELINE_DATA.map((item, i) => (
-            <Card key={item.name} $visible={visible} $delay={i * 0.1}>
+            <Card
+              key={item.name}
+              as={item.slug ? Link : 'div'}
+              to={item.slug ? `/pipeline/${item.slug}` : undefined}
+              $visible={visible}
+              $delay={i * 0.1}
+            >
               <Phase $color={item.phaseColor} $bg={item.phaseBg}>
                 {item.phase}
               </Phase>
               <CardName>{item.name}</CardName>
               <CardDesc>{item.description}</CardDesc>
-              <LearnMore>
-                Learn more <span>&rarr;</span>
-              </LearnMore>
+              {item.slug && (
+                <LearnMore>
+                  Learn more <span>&rarr;</span>
+                </LearnMore>
+              )}
             </Card>
           ))}
         </Grid>
+        <ViewAllRow $visible={visible}>
+          <ViewAllLink to="/pipeline">
+            View Full Pipeline <span>&rarr;</span>
+          </ViewAllLink>
+        </ViewAllRow>
       </Container>
     </Wrapper>
   );
@@ -139,30 +157,10 @@ const Card = styled.div`
   border: 1px solid ${colors.border};
   border-radius: ${metrics.radius.large};
   padding: 1.75rem;
-  transition: all 0.35s ease;
   opacity: ${p => p.$visible ? 1 : 0};
-  transform: translateY(${p => p.$visible ? 0 : '30px'});
-  transition-delay: ${p => p.$delay}s;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: ${colors.navy};
-    border-radius: ${metrics.radius.large} ${metrics.radius.large} 0 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover {
-    border-color: ${colors.borderAccent};
-    box-shadow: ${colors.shadowLg};
-    transform: ${p => p.$visible ? 'translateY(-4px)' : 'translateY(30px)'};
-
-    &::after { opacity: 1; }
-  }
+  transform: translateY(${p => p.$visible ? 0 : '15px'});
+  transition: all 0.5s ease ${p => p.$delay}s;
+  display: block;
 `;
 
 const Phase = styled.span`
@@ -200,12 +198,23 @@ const LearnMore = styled.span`
   font-size: 0.85rem;
   font-weight: 600;
   color: ${colors.blue};
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: all 0.3s ease;
+`;
 
-  ${Card}:hover & {
-    opacity: 1;
-    transform: translateX(0);
-  }
+const ViewAllRow = styled.div`
+  text-align: center;
+  margin-top: 2.5rem;
+  opacity: ${p => p.$visible ? 1 : 0};
+  transition: opacity 0.6s ease 0.5s;
+`;
+
+const ViewAllLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: ${colors.blue};
+  transition: gap 0.25s ease;
+
+  &:hover { gap: 0.6rem; }
 `;

@@ -1,26 +1,46 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import colors from '../../../assets/styles/variables/colors';
-import metrics from '../../../assets/styles/variables/metrics';
+import colors from '../../assets/styles/variables/colors';
+import metrics from '../../assets/styles/variables/metrics';
 
 const LOGO_URL = 'https://d1io3yog0oux5.cloudfront.net/_7a2f79adab42c3713ff32f3f4d0b71d0/actiniumpharma/files/images/logo.png';
 
 const COLUMNS = [
   {
     title: 'Company',
-    links: ['About Us', 'Management', 'Board of Directors', 'Partners', 'Careers'],
+    links: [
+      { label: 'About Us', to: '/about' },
+      { label: 'Management', to: '/about#management' },
+      { label: 'Board of Directors', to: '/about#board' },
+      { label: 'Careers', to: '/careers' },
+    ],
   },
   {
     title: 'Pipeline',
-    links: ['Actimab-A', 'ATNM-400', 'Iomab-ACT', 'Iomab-B', 'Clinical Trials'],
+    links: [
+      { label: 'Actimab-A', to: '/pipeline/actimab-a' },
+      { label: 'ATNM-400', to: '/pipeline/atnm-400' },
+      { label: 'Iomab-ACT', to: '/pipeline/iomab-act' },
+      { label: 'Iomab-B', to: '/pipeline/iomab-b' },
+    ],
   },
   {
     title: 'Investors',
-    links: ['News & Events', 'Stock Information', 'SEC Filings', 'Governance', 'Publications'],
+    links: [
+      { label: 'News & Events', to: '/investors#news' },
+      { label: 'SEC Filings', to: '/investors#filings' },
+      { label: 'Stock Information', href: 'https://ir.actiniumpharma.com', external: true },
+      { label: 'Governance', href: 'https://ir.actiniumpharma.com', external: true },
+    ],
   },
   {
     title: 'Connect',
-    links: ['Contact Us', 'Media Inquiries', 'Email Alerts'],
+    links: [
+      { label: 'Contact Us', to: '/contact' },
+      { label: 'Investor Relations', to: '/investors' },
+      { label: 'Email Alerts', href: 'https://ir.actiniumpharma.com', external: true },
+    ],
   },
 ];
 
@@ -30,14 +50,16 @@ export default function Footer() {
       <Container>
         <Grid>
           <Brand>
-            <LogoImg src={LOGO_URL} alt="Actinium Pharmaceuticals" />
+            <LogoLink to="/">
+              <LogoImg src={LOGO_URL} alt="Actinium Pharmaceuticals" />
+            </LogoLink>
             <BrandDesc>
               A clinical-stage biopharmaceutical company developing targeted
               radiotherapies based on proprietary Actinium-225 technology.
             </BrandDesc>
             <Socials>
-              <SocialLink href="#" aria-label="LinkedIn">in</SocialLink>
-              <SocialLink href="#" aria-label="Twitter">X</SocialLink>
+              <SocialLink href="https://www.linkedin.com/company/actinium-pharmaceuticals" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</SocialLink>
+              <SocialLink href="https://twitter.com/ActiniumPharma" target="_blank" rel="noopener noreferrer" aria-label="Twitter">X</SocialLink>
             </Socials>
           </Brand>
           {COLUMNS.map(col => (
@@ -45,8 +67,14 @@ export default function Footer() {
               <ColTitle>{col.title}</ColTitle>
               <ColList>
                 {col.links.map(link => (
-                  <li key={link}>
-                    <ColLink href="#">{link}</ColLink>
+                  <li key={link.label}>
+                    {link.external ? (
+                      <ColAnchor href={link.href} target="_blank" rel="noopener noreferrer">
+                        {link.label}
+                      </ColAnchor>
+                    ) : (
+                      <ColLink to={link.to}>{link.label}</ColLink>
+                    )}
                   </li>
                 ))}
               </ColList>
@@ -56,9 +84,8 @@ export default function Footer() {
         <Bottom>
           <Copyright>&copy; 2026 Actinium Pharmaceuticals, Inc. All rights reserved.</Copyright>
           <Legal>
-            <LegalLink href="#">Privacy Policy</LegalLink>
-            <LegalLink href="#">Disclaimer</LegalLink>
-            <LegalLink href="#">Sitemap</LegalLink>
+            <LegalLink to="/contact">Privacy Policy</LegalLink>
+            <LegalLink to="/contact">Disclaimer</LegalLink>
           </Legal>
         </Bottom>
       </Container>
@@ -96,6 +123,10 @@ const Brand = styled.div`
   @media (max-width: ${metrics.breakpoints.desktop}) {
     grid-column: 1 / -1;
   }
+`;
+
+const LogoLink = styled(Link)`
+  display: inline-block;
 `;
 
 const LogoImg = styled.img`
@@ -155,13 +186,15 @@ const ColList = styled.ul`
   gap: 0.45rem;
 `;
 
-const ColLink = styled.a`
+const colLinkStyles = `
   font-size: 0.88rem;
-  color: ${colors.textOnDarkMuted};
+  color: rgba(255, 255, 255, 0.7);
   transition: color 0.2s ease;
-
   &:hover { color: white; }
 `;
+
+const ColLink = styled(Link)`${colLinkStyles}`;
+const ColAnchor = styled.a`${colLinkStyles}`;
 
 const Bottom = styled.div`
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -188,10 +221,9 @@ const Legal = styled.div`
   gap: 1.25rem;
 `;
 
-const LegalLink = styled.a`
+const LegalLink = styled(Link)`
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.35);
   transition: color 0.2s ease;
-
   &:hover { color: rgba(255, 255, 255, 0.6); }
 `;

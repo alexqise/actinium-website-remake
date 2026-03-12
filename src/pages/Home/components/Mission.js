@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
@@ -39,6 +40,9 @@ export default function Mission() {
             therapies for patients battling cancers with limited treatment
             options.
           </Desc>
+          <LearnMoreLink to="/about">
+            Learn more about us <span>&rarr;</span>
+          </LearnMoreLink>
         </TextCol>
         <StatsCol $visible={visible}>
           {STATS.map(stat => (
@@ -112,6 +116,19 @@ const Desc = styled.p`
   color: ${colors.textSecondary};
   line-height: 1.7;
   max-width: 500px;
+`;
+
+const LearnMoreLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: ${colors.blue};
+  transition: gap 0.25s ease;
+
+  &:hover { gap: 0.6rem; }
 `;
 
 const StatsCol = styled.div`

@@ -1,29 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
 import useReveal from '../../../hooks/useReveal';
-
-const NEWS_DATA = [
-  {
-    date: 'March 5, 2026',
-    title: 'Actinium Reports Positive Interim Data from Phase 2 Actimab-A Clinical Trial',
-    excerpt: 'Updated results demonstrate meaningful clinical responses in patients with relapsed or refractory AML, supporting advancement of the program.',
-  },
-  {
-    date: 'February 18, 2026',
-    title: 'ATNM-400 Receives FDA Fast Track Designation for mCRPC',
-    excerpt: 'The designation highlights the potential of ATNM-400 to address a serious condition and fill an unmet medical need in prostate cancer treatment.',
-  },
-  {
-    date: 'January 29, 2026',
-    title: 'Actinium Expands Ac-225 Manufacturing Capabilities with New Facility',
-    excerpt: 'Expansion of proprietary manufacturing infrastructure to meet growing clinical and future commercial demand for Actinium-225.',
-  },
-];
+import NEWS from '../../../data/newsData';
 
 export default function News() {
   const [ref, visible] = useReveal(0.1);
+  const displayNews = NEWS.slice(0, 3);
 
   return (
     <Wrapper id="news">
@@ -33,17 +18,17 @@ export default function News() {
             <Label $visible={visible}>Latest Updates</Label>
             <Title $visible={visible}>News &amp; Events</Title>
           </div>
-          <ViewAll href="#" $visible={visible}>
+          <ViewAll to="/investors#news" $visible={visible}>
             View All News <span>&rarr;</span>
           </ViewAll>
         </Header>
         <Grid>
-          {NEWS_DATA.map((item, i) => (
+          {displayNews.map((item, i) => (
             <Card key={i} $visible={visible} $delay={i * 0.1}>
-              <Date>{item.date}</Date>
+              <DateLabel>{item.date}</DateLabel>
               <CardTitle>{item.title}</CardTitle>
               <Excerpt>{item.excerpt}</Excerpt>
-              <ReadMore href="#">Read more &rarr;</ReadMore>
+              <ReadMore to="/investors#news">Read more &rarr;</ReadMore>
             </Card>
           ))}
         </Grid>
@@ -105,14 +90,13 @@ const Title = styled.h2`
   transition: all 0.6s ease 0.1s;
 `;
 
-const ViewAll = styled.a`
+const ViewAll = styled(Link)`
   font-size: 0.9rem;
   font-weight: 600;
   color: ${colors.blue};
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  transition: gap 0.25s ease;
   opacity: ${p => p.$visible ? 1 : 0};
   transition: opacity 0.6s ease 0.2s, gap 0.25s ease;
 
@@ -139,19 +123,12 @@ const Card = styled.article`
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  transition: all 0.35s ease;
   opacity: ${p => p.$visible ? 1 : 0};
-  transform: translateY(${p => p.$visible ? 0 : '30px'});
-  transition-delay: ${p => p.$delay}s;
-
-  &:hover {
-    border-color: ${colors.borderAccent};
-    box-shadow: ${colors.shadowLg};
-    transform: ${p => p.$visible ? 'translateY(-3px)' : 'translateY(30px)'};
-  }
+  transform: translateY(${p => p.$visible ? 0 : '15px'});
+  transition: all 0.5s ease ${p => p.$delay}s;
 `;
 
-const Date = styled.span`
+const DateLabel = styled.span`
   font-size: 0.8rem;
   font-weight: 600;
   color: ${colors.blue};
@@ -174,7 +151,7 @@ const Excerpt = styled.p`
   flex: 1;
 `;
 
-const ReadMore = styled.a`
+const ReadMore = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;

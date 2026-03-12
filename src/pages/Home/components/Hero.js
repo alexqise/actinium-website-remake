@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
@@ -6,7 +7,6 @@ import metrics from '../../../assets/styles/variables/metrics';
 export default function Hero() {
   return (
     <Wrapper id="hero">
-      <BgPattern />
       <Content>
         <Eyebrow>Pioneering Targeted Alpha Therapy</Eyebrow>
         <Title>
@@ -19,30 +19,20 @@ export default function Hero() {
           cancer treatment for patients who need it most.
         </Subtitle>
         <Actions>
-          <PrimaryBtn href="#pipeline">
+          <PrimaryBtn to="/pipeline">
             Explore Our Pipeline
             <Arrow>&rarr;</Arrow>
           </PrimaryBtn>
-          <SecondaryBtn href="#">Investor Relations</SecondaryBtn>
+          <SecondaryBtn to="/investors">Investor Relations</SecondaryBtn>
         </Actions>
       </Content>
-      <ScrollHint>
-        <ScrollLine />
-      </ScrollHint>
     </Wrapper>
   );
 }
 
 const fadeUp = keyframes`
-  from { opacity: 0; transform: translateY(28px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
-`;
-
-const scrollPulse = keyframes`
-  0% { transform: scaleY(0); opacity: 0; transform-origin: top; }
-  40% { transform: scaleY(1); opacity: 1; transform-origin: top; }
-  40.01% { transform-origin: bottom; }
-  80%, 100% { transform: scaleY(0); opacity: 0; transform-origin: bottom; }
 `;
 
 const Wrapper = styled.section`
@@ -50,30 +40,7 @@ const Wrapper = styled.section`
   min-height: 100vh;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  background: linear-gradient(168deg, ${colors.bgPrimary} 0%, ${colors.bgSecondary} 40%, ${colors.blueFaint} 100%);
-`;
-
-const BgPattern = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: 0.4;
-  background-image:
-    radial-gradient(circle at 75% 25%, ${colors.bluePale} 0%, transparent 50%),
-    radial-gradient(circle at 20% 80%, rgba(8, 145, 178, 0.06) 0%, transparent 40%);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(90deg, transparent 49.5%, ${colors.border} 49.5%, ${colors.border} 50.5%, transparent 50.5%),
-      linear-gradient(0deg, transparent 49.5%, ${colors.border} 49.5%, ${colors.border} 50.5%, transparent 50.5%);
-    background-size: 120px 120px;
-    opacity: 0.35;
-    mask-image: radial-gradient(ellipse 70% 70% at 70% 40%, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 70% 40%, black 0%, transparent 70%);
-  }
+  background: ${colors.bgSecondary};
 `;
 
 const Content = styled.div`
@@ -97,7 +64,7 @@ const Eyebrow = styled.span`
   text-transform: uppercase;
   color: ${colors.blue};
   margin-bottom: 1.5rem;
-  animation: ${fadeUp} 0.7s ease both;
+  animation: ${fadeUp} 0.6s ease both;
   animation-delay: 0.1s;
   opacity: 0;
 `;
@@ -111,8 +78,8 @@ const Title = styled.h1`
   color: ${colors.navy};
   max-width: 720px;
   margin-bottom: 1.5rem;
-  animation: ${fadeUp} 0.7s ease both;
-  animation-delay: 0.25s;
+  animation: ${fadeUp} 0.6s ease both;
+  animation-delay: 0.2s;
   opacity: 0;
 `;
 
@@ -127,8 +94,8 @@ const Subtitle = styled.p`
   color: ${colors.textSecondary};
   max-width: 540px;
   margin-bottom: 2.25rem;
-  animation: ${fadeUp} 0.7s ease both;
-  animation-delay: 0.4s;
+  animation: ${fadeUp} 0.6s ease both;
+  animation-delay: 0.3s;
   opacity: 0;
 `;
 
@@ -136,8 +103,8 @@ const Actions = styled.div`
   display: flex;
   gap: 0.875rem;
   flex-wrap: wrap;
-  animation: ${fadeUp} 0.7s ease both;
-  animation-delay: 0.55s;
+  animation: ${fadeUp} 0.6s ease both;
+  animation-delay: 0.4s;
   opacity: 0;
 `;
 
@@ -147,7 +114,7 @@ const Arrow = styled.span`
   margin-left: 0.35rem;
 `;
 
-const PrimaryBtn = styled.a`
+const PrimaryBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
   padding: 0.8rem 1.75rem;
@@ -156,18 +123,15 @@ const PrimaryBtn = styled.a`
   color: white;
   background: ${colors.navy};
   border-radius: ${metrics.radius.medium};
-  transition: all 0.3s ease;
+  transition: background 0.25s ease;
 
   &:hover {
     background: ${colors.navyLight};
-    transform: translateY(-1px);
-    box-shadow: ${colors.shadowLg};
-
     ${Arrow} { transform: translateX(3px); }
   }
 `;
 
-const SecondaryBtn = styled.a`
+const SecondaryBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
   padding: 0.8rem 1.75rem;
@@ -177,29 +141,9 @@ const SecondaryBtn = styled.a`
   background: white;
   border: 1.5px solid ${colors.border};
   border-radius: ${metrics.radius.medium};
-  transition: all 0.3s ease;
+  transition: border-color 0.25s ease;
 
   &:hover {
     border-color: ${colors.navy};
-    transform: translateY(-1px);
-    box-shadow: ${colors.shadowMd};
   }
-`;
-
-const ScrollHint = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-
-  @media (max-width: ${metrics.breakpoints.tablet}) {
-    display: none;
-  }
-`;
-
-const ScrollLine = styled.div`
-  width: 1px;
-  height: 44px;
-  background: ${colors.navy};
-  animation: ${scrollPulse} 2.5s ease-in-out infinite;
 `;
