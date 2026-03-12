@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import colors from '../../../assets/styles/variables/colors';
 import metrics from '../../../assets/styles/variables/metrics';
@@ -6,17 +7,14 @@ import useReveal from '../../../hooks/useReveal';
 
 const FEATURES = [
   {
-    icon: '⚛',
     title: 'Potent Alpha Particles',
     desc: 'Alpha particles deliver high linear energy transfer over short distances, causing irreparable double-strand DNA breaks in targeted cancer cells.',
   },
   {
-    icon: '◎',
     title: 'Precision Targeting',
     desc: 'Conjugated to monoclonal antibodies that bind specifically to tumor-associated antigens, ensuring precise delivery to cancer cells.',
   },
   {
-    icon: '⏱',
     title: '10-Day Half-Life',
     desc: 'Optimal half-life balances therapeutic efficacy with practical considerations for manufacturing and clinical use.',
   },
@@ -51,14 +49,14 @@ export default function Technology() {
           <Features>
             {FEATURES.map((feat, i) => (
               <Feature key={feat.title} $visible={visible} $delay={0.15 * i}>
-                <FeatureIcon>{feat.icon}</FeatureIcon>
-                <div>
-                  <FeatureTitle>{feat.title}</FeatureTitle>
-                  <FeatureDesc>{feat.desc}</FeatureDesc>
-                </div>
+                <FeatureTitle>{feat.title}</FeatureTitle>
+                <FeatureDesc>{feat.desc}</FeatureDesc>
               </Feature>
             ))}
           </Features>
+          <LearnMoreLink to="/technology">
+            Explore our technology <span>&rarr;</span>
+          </LearnMoreLink>
         </TextCol>
       </Container>
     </Wrapper>
@@ -205,25 +203,9 @@ const Features = styled.div`
 `;
 
 const Feature = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
   opacity: ${p => p.$visible ? 1 : 0};
-  transform: translateY(${p => p.$visible ? 0 : '20px'});
+  transform: translateY(${p => p.$visible ? 0 : '15px'});
   transition: all 0.5s ease ${p => 0.3 + p.$delay}s;
-`;
-
-const FeatureIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  border-radius: ${metrics.radius.small};
-  background: ${colors.blueFaint};
-  border: 1px solid ${colors.bluePale};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
 `;
 
 const FeatureTitle = styled.h4`
@@ -237,4 +219,17 @@ const FeatureDesc = styled.p`
   font-size: 0.88rem;
   color: ${colors.textSecondary};
   line-height: 1.55;
+`;
+
+const LearnMoreLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: ${colors.blue};
+  transition: gap 0.25s ease;
+
+  &:hover { gap: 0.6rem; }
 `;
