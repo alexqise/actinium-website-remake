@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import GlobalStyles from './assets/styles/global';
 import Layout from './components/Layout/Layout';
@@ -12,24 +12,29 @@ import Investors from './pages/Investors';
 import Contact from './pages/Contact';
 import Careers from './pages/Careers';
 
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+
 export default function App() {
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="pipeline" element={<PipelineOverview />} />
-          <Route path="pipeline/:slug" element={<PipelineDetail />} />
-          <Route path="technology" element={<Technology />} />
-          <Route path="rd-platform" element={<RDPlatform />} />
-          <Route path="investors" element={<Investors />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="careers" element={<Careers />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="pipeline" element={<PipelineOverview />} />
+            <Route path="pipeline/:slug" element={<PipelineDetail />} />
+            <Route path="technology" element={<Technology />} />
+            <Route path="rd-platform" element={<RDPlatform />} />
+            <Route path="investors" element={<Investors />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="careers" element={<Careers />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

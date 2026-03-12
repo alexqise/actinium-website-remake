@@ -32,6 +32,7 @@ const NAV_ITEMS = [
     ],
   },
   { label: 'Careers', to: '/careers' },
+  { label: 'Dashboard', to: '/dashboard' },
 ];
 
 export default NAV_ITEMS;
