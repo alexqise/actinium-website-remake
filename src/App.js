@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Agentation } from 'agentation';
 import GlobalStyles from './assets/styles/global';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
@@ -35,6 +36,7 @@ export default function App() {
           </Route>
         </Routes>
       </Suspense>
+      {process.env.NODE_ENV === 'development' && <Agentation />}
     </BrowserRouter>
   );
 }

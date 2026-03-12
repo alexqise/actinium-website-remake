@@ -6,8 +6,6 @@ import StatusIndicator from './StatusIndicator';
 import PhaseSteps from './PhaseSteps';
 import EnrollmentRing from './EnrollmentRing';
 import TimelineBar from './TimelineBar';
-import { getStatusColor } from '../utils';
-
 export default function TrialCard({ study }) {
   const identification = study.protocolSection.identificationModule;
   const statusModule = study.protocolSection.statusModule;
@@ -26,14 +24,17 @@ export default function TrialCard({ study }) {
   const completionDate = statusModule?.completionDateStruct?.date;
   const completionDateType = statusModule?.completionDateStruct?.type;
 
-  const { color: statusColor } = getStatusColor(overallStatus);
-
   const displayConditions = conditions?.slice(0, 3) || [];
   const overflowCount = conditions ? conditions.length - 3 : 0;
 
   return (
-    <Card $accentColor={statusColor}>
-      {/* Header row: status + NCT link */}
+    <Card>
+      {/* Title header */}
+      <TitleHeader>
+        <Title>{title}</Title>
+      </TitleHeader>
+
+      {/* Status row: status + NCT link */}
       <HeaderRow>
         <StatusIndicator status={overallStatus} />
         <NctLink
@@ -44,9 +45,6 @@ export default function TrialCard({ study }) {
           {nctId} &#8599;
         </NctLink>
       </HeaderRow>
-
-      {/* Title */}
-      <Title>{title}</Title>
 
       {/* Condition tags */}
       {displayConditions.length > 0 && (
@@ -88,20 +86,21 @@ export default function TrialCard({ study }) {
 const Card = styled.div`
   background: ${colors.bgPrimary};
   border: 1px solid ${colors.border};
-  border-left: 3px solid ${p => p.$accentColor};
   border-radius: ${metrics.radius.large};
-  padding: 1.5rem;
-  transition: box-shadow 0.25s ease;
+  overflow: hidden;
+`;
 
-  &:hover {
-    box-shadow: ${colors.shadowMd};
-  }
+const TitleHeader = styled.div`
+  background: ${colors.bgSecondary};
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid ${colors.borderLight};
 `;
 
 const HeaderRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 1rem 1.5rem 0;
   margin-bottom: 0.75rem;
 `;
 
@@ -119,12 +118,12 @@ const NctLink = styled.a`
 `;
 
 const Title = styled.h3`
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 1.1rem;
-  font-weight: 400;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: ${colors.navy};
-  margin: 0 0 0.5rem;
-  line-height: 1.35;
+  margin: 0;
+  line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -135,6 +134,7 @@ const ConditionRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  padding: 0 1.5rem;
   margin-bottom: 1.25rem;
 `;
 
@@ -152,7 +152,7 @@ const MetricsRow = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 1rem 1.5rem;
   border-top: 1px solid ${colors.borderLight};
   border-bottom: 1px solid ${colors.borderLight};
   margin-bottom: 1rem;
@@ -173,5 +173,5 @@ const MetricLabel = styled.span`
 `;
 
 const TimelineSection = styled.div`
-  padding-top: 0;
+  padding: 0 1.5rem 1.5rem;
 `;
