@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: 'R&D Platform', href: '#technology' },
   { label: 'Investors', href: '#news' },
   { label: 'Careers', href: '#cta' },
+  { label: 'Dashboard', href: '/dashboard' },
 ];
 
 export default function Nav() {
